@@ -141,6 +141,13 @@ def get_log_file_with_max_date(log_files: list) -> FileInfo:
     return FileInfo(log_file_with_max_date, max_date)
 
 
+def is_report_exists(report_date: datetime.date, settings: dict) -> bool:
+    """Checks exists reports."""
+    report_dir = settings.get("REPORT_DIR", None)
+    report_path = f"{report_dir}/report-{report_date}.html"
+    return os.path.isfile(report_path)
+
+
 def get_log_file(settings: dict) -> FileInfo:
     """Gets path to log file and date of it."""
     logs_dir = settings.get('LOG_DIR', None)
@@ -227,11 +234,15 @@ def main() -> None:
         config_logger(settings)
         logger.debug(msg=f'Script settings: {json.dumps(settings, indent=4)}')
         file_path, report_date = get_log_file(settings)
-        g = parse_generator(file_path)
-        url_dict = parse_line(g)
-        table_json = prepare_report_data(url_dict)
-        template_text = get_report_template(settings)
-        create_report(table_json, template_text, settings, report_date)
+        is_file_exists = is_report_exists(report_date, settings)
+        if not is_file_exists:
+            g = parse_generator(file_path)
+            url_dict = parse_line(g)
+            table_json = prepare_report_data(url_dict)
+            template_text = get_report_template(settings)
+            create_report(table_json, template_text, settings, report_date)
+        else:
+            logger.info(f"Log file {file_path}, alredy parsed. Report file - report-{report_date}.html.")
     except KeyboardInterrupt:
         logging.exception("The execution was interrupted by the user")
 
