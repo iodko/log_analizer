@@ -242,7 +242,7 @@ def main() -> None:
             template_text = get_report_template(settings)
             create_report(table_json, template_text, settings, report_date)
         else:
-            logger.info(f"Log file {file_path}, alredy parsed. Report file - report-{report_date}.html.")
+            logger.info(f"Log file {file_path}, already parsed. Report file - report-{report_date}.html.")
     except KeyboardInterrupt:
         logging.exception("The execution was interrupted by the user")
 

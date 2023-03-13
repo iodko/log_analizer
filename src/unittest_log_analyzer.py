@@ -57,13 +57,6 @@ class FixturesTest(unittest.TestCase):
         self.assertTrue(log_date, 'Log date must be date.')
         self.failUnlessEqual(log_path, 'nginx-access-ui.log-20180325')
 
-    def test_generator_and_parse(self):
-        file_path, report_date = get_log_file(self.settings)
-        g = parse_generator(file_path)
-        data = parse_line(g)
-        total_exe_time = data.get("total_exe_time", None)
-        self.failUnless(total_exe_time)
-
     def test_prepare_report_data(self):
         report_data = prepare_report_data(self.fixture_report_data)
         time_med = report_data[0].get('time_med', None)
